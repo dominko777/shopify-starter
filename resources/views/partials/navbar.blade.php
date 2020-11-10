@@ -35,6 +35,7 @@
                 <a href="/products" class="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white  @if(Request::path() == 'products') bg-gray-900 @endif">Products</a>
                 <a href="/customers" class="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white  @if(Request::path() == 'customers') bg-gray-900 @endif">Customers</a>
                 <a href="/settings" class="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white  @if(Request::path() == 'settings') bg-gray-900 @endif">Settings</a>
+                <a href="/test" class="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white  @if(Request::path() == 'settings') bg-gray-900 @endif">Test</a> 
               </div>
             </div>
           </div>

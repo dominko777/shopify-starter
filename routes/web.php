@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::view('/products', 'products');
 Route::view('/customers', 'customers');
 Route::view('/settings', 'settings');
+Route::get('/test', function() {
+	$shop = Auth::user();
+    return $shop->api()->rest('GET', '/admin/shop.json')['body']['shop'];
+});  

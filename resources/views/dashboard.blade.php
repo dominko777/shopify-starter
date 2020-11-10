@@ -1,7 +1,7 @@
 @extends('shopify-app::layouts.default')
 
 @section('content')
-      
+      <!-- @include('partials.activate-modal') -->
 
 @endsection
 
@@ -18,5 +18,9 @@
             title: 'Dashboard',
         };
         var myTitleBar = TitleBar.create(app, titleBarOptions);
+
+        function setupTheme() {
+            alert('1111');
+        }   
     </script>
 @endsection
