@@ -1,7 +1,9 @@
 @extends('shopify-app::layouts.default')
 
 @section('content')
-      <!-- @include('partials.activate-modal') -->
+        @if ($setting && !$setting->activated)
+          @include('partials.activate-modal')
+        @endif  
 
 @endsection
 
@@ -17,10 +19,6 @@
         var titleBarOptions = {
             title: 'Dashboard',
         };
-        var myTitleBar = TitleBar.create(app, titleBarOptions);
-
-        function setupTheme() {
-            alert('1111');
-        }   
+        var myTitleBar = TitleBar.create(app, titleBarOptions);  
     </script>
 @endsection

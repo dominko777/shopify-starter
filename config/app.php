@@ -30,6 +30,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'domain' => 'it-modern-service.myshopify.com',
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

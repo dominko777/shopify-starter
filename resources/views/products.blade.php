@@ -3,6 +3,8 @@
 @section('content')
     Products
 
+    @include('partials.whishlists_table')
+
 @endsection
 
 @section('scripts')
