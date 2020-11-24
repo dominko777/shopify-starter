@@ -1,4 +1,37 @@
-import "../css/custom.css"  
+import Vuetable from "vuetable-2/src/components/Vuetable"
+import VuetablePagination from "vuetable-2/src/components/VuetablePagination"
+import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo"
+console.log('Hello from reviews script!!!!!!!!!!!')
+
+
+export default {
+    components: {
+        Vuetable,
+        VuetablePagination,
+        VuetablePaginationInfo
+    },
+    data() {
+        return {
+            reviews: [],
+            getAllBook: {},
+            fields: [
+                {
+                    name: "description",
+                    title: "description"
+                }
+            ],
+        };
+    },
+    methods: {
+        loadReviews() {
+            axios.get("api/reviews").then(({ data }) => (this.reviews = data));
+        }
+    },
+    mounted() {
+        this.loadReviews();
+    }
+};
+/*import "../css/custom.css"  
 require("noty/src/noty.scss")
 require("noty/src/themes/mint.scss")
 window.Noty = require('noty');  
@@ -83,3 +116,4 @@ if (btn) {
 	var productId = btn.dataset.product;
 	checkWhishlist(customerId, productId); 
 }
+*/

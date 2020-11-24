@@ -16,9 +16,7 @@ use App\Models\Setting;
 Route::post('/configure-theme',  );
 
 Route::get('/', function () {
-	$shop = Auth::user();
-	$setting = Setting::where('shop_id', $shop->name)->first();
-    return view('dashboard', compact('setting'));
+    return view('reviews');
 })->middleware(['auth.shopify'])->name('home');
 
 Route::view('/customers', 'customers');

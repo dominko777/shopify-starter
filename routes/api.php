@@ -1,7 +1,6 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('/reviews', 'App\Http\Controllers\ReviewController');
 
 Route::post('/add-to-whishlist', 'App\Http\Controllers\WhishlistController@store');
 Route::post('/delete-to-whishlist', 'App\Http\Controllers\WhishlistController@destroy');

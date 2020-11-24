@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWhishlistsTable extends Migration
+class CreatePhotosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateWhishlistsTable extends Migration
      */
     public function up()
     {
-        Schema::create('whishlists', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('shop_id');
-            $table->string('customer_id');
-            $table->string('product_id');
+            $table->string('photo');
+            $table->bigInteger('review_id')->unsigned();
+            $table->foreign('review_id')->references('id')->on('reviews');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateWhishlistsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('whishlists');
+        Schema::dropIfExists('photos');
     }
 }

@@ -1,0 +1,45 @@
+$color-black: #232323;
+$color-black-2: #0A100D;
+$color-yello: #FFCC00;
+$color-green: #8ACB88;
+$color-grey: #545454;
+$color-red: #F25F5C;
+$color-blue: #4FB0C6;
+$color-light-grey: #F2F2F2;
+
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  background-color: $color-light-grey;
+}
+
+.main {
+    min-height: 100%;
+}
+
+.menu-list a.is-active {
+    background-color: $color-blue;
+    color: #fff;
+} 
+
+.menu-list a {
+    font-size: 18px;
+} 
+
+.button.is-link {
+    background-color: $color-blue;
+}
+
+.button.is-primary {
+	background-color: $color-green;
+}
+
+.button.is-danger {
+    background-color: $color-red;
+}
+
+.button.is-info {
+    background-color: $color-blue;
+}

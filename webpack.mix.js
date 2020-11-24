@@ -12,7 +12,5 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-	.js('resources/js/whishlist.js', 'public/js')
-   .postCss('resources/css/app.css', 'public/css', [
-     require('tailwindcss'),
-]);
+	.js('resources/js/reviews.js', 'public/js')
+    .sass('resources/saas/app.scss', 'public/css'); 

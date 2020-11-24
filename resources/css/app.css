@@ -1,5 +1,8 @@
-@import "tailwindcss/base";
+@import url("https://unpkg.com/@getbase/base/core.css");
 
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";
+/* Import Base Common */
+@import url("https://unpkg.com/@getbase/base/code.css");
+@import url("https://unpkg.com/@getbase/base/forms.css");
+@import url("https://unpkg.com/@getbase/base/tables.css");
+@import url("https://unpkg.com/@getbase/base/typography.css");
+@import url("https://unpkg.com/@getbase/base/headings.css");
