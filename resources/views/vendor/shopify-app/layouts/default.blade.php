@@ -5,21 +5,19 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
-        <script type="text/javascript" src="https://unpkg.com/turbolinks"></script>
         <title>{{ config('shopify-app.app_name') }}</title>
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
         @yield('styles')
     </head>
   
 
     <body cz-shortcut-listen="true">
-        <div class="container-fluid main">
+        <div class="container-fluid main" id="app">
             <div class="columns">
                 <div class="column is-2">
                     @include('partials.menu_left') 
                 </div>
                 <div class="column is-10">
-                    @yield('content')
+                    <router-view></router-view>
                 </div>
             </div>
         </div>
