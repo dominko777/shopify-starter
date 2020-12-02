@@ -15,6 +15,61 @@ body {
   background-color: $color-light-grey;
 }
 
+.is-active {
+  background-color: $color-blue;
+  cursor: pointer;
+} 
+
+.pagination-link.is-current {
+    background-color: $color-blue;
+    border-color: $color-blue;
+    color: #fff;
+}
+
+.button.is-info {
+    background-color: $color-blue;
+}
+.button.is-info {
+    background-color: $color-blue;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-success {
+    background-color: $color-green;
+    border-color: transparent;
+    color: #fff;
+}
+
+.is-danger {
+  color: $color-red;
+  background-color: $color-red;
+}
+
+.button.is-danger {
+  background-color: $color-red;
+  border-color: transparent;
+  color: #fff;
+}
+
+.button.is-danger.is-outlined {
+  background-color: transparent;
+  border-color: $color-red;
+  color: $color-red;
+} 
+
+.button.is-danger:hover,
+.button.is-danger.is-hovered {
+  background-color: $color-red;
+  border-color: transparent;
+  color: #fff;
+}
+
+.icon-button .icon:first-child:last-child {
+    margin-left: calc(-0.5em - 2px);
+    margin-right: calc(-0.5em - 10px);
+}
+
 .main {
     min-height: 100%;
 }
@@ -42,4 +97,20 @@ body {
 
 .button.is-info {
     background-color: $color-blue;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+   content: "\2605";
+   position: absolute;
+   color: yello;
 }

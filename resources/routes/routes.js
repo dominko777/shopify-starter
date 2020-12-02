@@ -3,11 +3,12 @@ import ContactUs from '../components/ContactUs.vue';
 
 export const routes = [
     {
-        path: '/',
-        component: ReviewsIndex
-    },
-    {
         path: '/contactUs',
         component: ContactUs
-    }
+    },
+    {
+        path: '/',
+        component: ReviewsIndex,
+        name: 'reviews',
+    } 
 ]

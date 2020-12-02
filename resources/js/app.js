@@ -12,6 +12,8 @@ import { routes } from '../routes/routes.js'
 
 
 const router = new VueRouter({
+	linkActiveClass: 'is-active',
+	linkExactActiveClass: 'is-active',
     routes,
     mode:'history'
 });

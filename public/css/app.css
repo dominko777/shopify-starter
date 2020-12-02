@@ -12800,6 +12800,62 @@ body {
   background-color: #F2F2F2;
 }
 
+.is-active {
+  background-color: #4FB0C6;
+  cursor: pointer;
+}
+
+.pagination-link.is-current {
+  background-color: #4FB0C6;
+  border-color: #4FB0C6;
+  color: #fff;
+}
+
+.button.is-info {
+  background-color: #4FB0C6;
+}
+
+.button.is-info {
+  background-color: #4FB0C6;
+  border-color: transparent;
+  color: #fff;
+}
+
+.button.is-success {
+  background-color: #8ACB88;
+  border-color: transparent;
+  color: #fff;
+}
+
+.is-danger {
+  color: #F25F5C;
+  background-color: #F25F5C;
+}
+
+.button.is-danger {
+  background-color: #F25F5C;
+  border-color: transparent;
+  color: #fff;
+}
+
+.button.is-danger.is-outlined {
+  background-color: transparent;
+  border-color: #F25F5C;
+  color: #F25F5C;
+}
+
+.button.is-danger:hover,
+.button.is-danger.is-hovered {
+  background-color: #F25F5C;
+  border-color: transparent;
+  color: #fff;
+}
+
+.icon-button .icon:first-child:last-child {
+  margin-left: calc(-0.5em - 2px);
+  margin-right: calc(-0.5em - 10px);
+}
+
 .main {
   min-height: 100%;
 }
@@ -12827,5 +12883,23 @@ body {
 
 .button.is-info {
   background-color: #4FB0C6;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+  content: "\2605";
+  position: absolute;
+  color: yello;
 }
 

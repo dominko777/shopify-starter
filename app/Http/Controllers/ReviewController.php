@@ -14,7 +14,19 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return Review::all();
+        $reviews = Review::paginate(5);
+        $response = [
+            'pagination' => [
+                'total' => $reviews->total(),
+                'per_page' => $reviews->perPage(),
+                'current_page' => $reviews->currentPage(),
+                'last_page' => $reviews->lastPage(),
+                'from' => $reviews->firstItem(),
+                'to' => $reviews->lastItem()
+            ],
+            'data' => $reviews
+        ];
+        return response()->json($response);
     }
 
 
