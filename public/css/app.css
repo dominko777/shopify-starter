@@ -12903,3 +12903,44 @@ body {
   color: yello;
 }
 
+.rating-col {
+  width: 120px;
+}
+
+.overme-100 {
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+tr.reviews-item {
+  cursor: pointer;
+}
+
+tr.reviews-item:hover {
+  background-color: #F8F8F8;
+}
+
+.search-products-input {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#products-autocomplete {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.products-autocomplete {
+  background-color: white;
+  z-index: 999999;
+}
+
+.products-autocomplete li {
+  padding: 10px;
+  z-index: 9 !important;
+  cursor: pointer;
+  position: relative;
+}
+

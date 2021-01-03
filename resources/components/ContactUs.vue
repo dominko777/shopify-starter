@@ -8,7 +8,6 @@
 import Vuetable from "vuetable-2/src/components/Vuetable"
 import VuetablePagination from "vuetable-2/src/components/VuetablePagination"
 import VuetablePaginationInfo from "vuetable-2/src/components/VuetablePaginationInfo"
-console.log('2222222222Vue Component!!!!!!!!')
 
 
 export default {
@@ -31,7 +30,7 @@ export default {
     },
     methods: {
         loadReviews() {
-            axios.get("api/reviews").then(({ data }) => (this.reviews = data));
+            axios.get("reviews").then(({ data }) => (this.reviews = data));
         }
     },
     mounted() {

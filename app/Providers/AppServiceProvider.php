@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        //URL::forceScheme('https');
     }
 
     /**
@@ -24,5 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //URL::forceScheme('https');
+        if ($this->app->environment() != 'production') {
+            $parse = parse_url(config('app.url'));
+            request()->headers->set('host', $parse['host']);
+        }
     }
 }

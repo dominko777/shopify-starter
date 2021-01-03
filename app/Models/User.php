@@ -13,6 +13,11 @@ class User extends Authenticatable implements IShopModel
 {
     use HasFactory, Notifiable, ShopModel;
 
+    public function bookmarks()
+    {   
+      return $this->belongsToMany('App\Models\Review', 'bookmarks');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

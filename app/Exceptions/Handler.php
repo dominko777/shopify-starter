@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
+use Exception;
 
 class Handler extends ExceptionHandler
 {
@@ -32,6 +35,15 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        //
+        $this->renderable(function(Exception $e, $request) {
+            return $this->handleException($request, $e);
+        });
+    }
+
+    public function handleException($request, Exception $exception)
+    {
+        if ($exception instanceof MissingShopDomainException) {
+            return Redirect::secure('login');
+        }
     }
 }
