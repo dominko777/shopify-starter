@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\Review;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         $shop = Auth::user();
-        $reviews = Review::withCount('photos');
+        $reviews = Review::withCount('photos')->with('photos');
         $reviews->where('user_id', $shop->id);
         if ($request->has('search_query') && !empty($request->search_query)) {
             $searchQuery = $request->search_query;
@@ -88,7 +89,8 @@ class ReviewController extends Controller
               $reviews->has('bookmarks');
             } 
         }
-        $reviews = $reviews->with('bookmarks')->orderBy('created_at', 'DESC')->paginate(5);
+        $setting = Setting::where('shop_id', $shop->id)->firstOrFail();
+        $reviews = $reviews->with('bookmarks')->orderBy('created_at', 'DESC')->paginate($setting->admin_pagination_count);
         $response = [
             'pagination' => [
                 'total' => $reviews->total(),
@@ -112,7 +114,7 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -121,9 +123,10 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function show(Review $review)
+    public function show(Request $request)
     {
-        //
+        $saved = $review->create($request->all());
+        return ['success' => $saved , 'review' => $review];
     }
 
 
@@ -136,7 +139,9 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
-        //
+        $review = Review::where('id', $review->id)->withCount('photos')->with('photos')->first();
+        $review->update($request->all());
+        return ['review' => $review];
     }
 
     /**
@@ -159,7 +164,7 @@ class ReviewController extends Controller
 
     public function bookmark($id) {
       $shop = Auth::user();
-      $hasBookmark = $shop->bookmarks()->where(['user_id' => $shop->id, 'review_id' => $id])->exists();
+      $hasBookmark = $shop->bookmarks()->where(['bookmarks.user_id' => $shop->id, 'review_id' => $id])->exists();
       if ($hasBookmark) {
         $status = 'detached';
         $shop->bookmarks()->detach($id);
@@ -170,7 +175,7 @@ class ReviewController extends Controller
       return ['status' => $status];
     }
 
-    public function getStat($daysAgo) {
+    public function getStat(Request $request, $daysAgo) {
 
         $toDay = Carbon::now();
         $toDayCopy = Carbon::now();
@@ -184,9 +189,14 @@ class ReviewController extends Controller
         $reviews = Review::select(DB::Raw('COUNT(*) as `count`'), DB::Raw("DATE_FORMAT(created_at, '%d-%m-%Y') date"))
         ->whereDate('created_at', '>=',  $fromDay->format('Y-m-d'))
         ->whereDate('created_at', '<=',  $toDay->format('Y-m-d'))
-
-        ->groupBy('date')->orderBy('date', 'ASC')
-        ->get();  
+        ->groupBy('date')->orderBy('date', 'ASC');
+        if ($request->has('product_id')) {
+          $reviews->where('product_id', $request->product_id);
+        }
+        if ($request->has('rating') && $request->rating && $request->rating !== 'null') {
+          $reviews->where('stars', $request->rating);
+        }
+        $reviews = $reviews->get();  
 
         $dates = [];
         foreach ($days as $day) {
@@ -215,5 +225,21 @@ class ReviewController extends Controller
       } else {
         return ['status' => 'error'];
       }
+    }
+
+    public function getAverageStars($id) {
+      $sums = Review::where('product_id', 'like', '%' . $id )->whereNotNull('stars')->get('stars');
+      $avg = null;
+      if ($sums->count() > 0) {
+        $avg = $sums->sum("stars") / $sums->count();
+      }
+      $review = Review::where('product_id', 'like', '%' . $id )->firstOrFail();
+      $settigs = Setting::where('shop_id', $review->user_id)->firstOrFail();
+      $reviews = Review::where('product_id', 'like', '%' . $id )->paginate($settigs->pagination_count);
+      return [
+        'average' => round($avg, 1),
+        'reviews' => $reviews,
+        'settings' => $settigs
+      ];
     }
 }

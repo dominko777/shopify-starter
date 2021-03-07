@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     'shopify_api_key' => env('SHOPIFY_API_KEY', ''),
+    'shopify_url' => env('SHOPIFY_URL', ''),
 
     /*
     |--------------------------------------------------------------------------

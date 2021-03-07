@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SettingController;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -26,13 +27,14 @@ Route::post('/configure-theme',  );
 
 
 
+Route::get('product', 'App\Http\Controllers\ProductController@show');
+Route::get('reviews/average-stars/{id}', 'App\Http\Controllers\ReviewController@getAverageStars');
 
 Route::middleware(['auth.shopify'])->group(function () {
     Route::get('/', function () {
     	return view('reviews');
 	})->middleware(['auth.shopify'])->name('home');
-
-    Route::get('product', 'App\Http\Controllers\ProductController@show');
+    
     Route::resource('products', ProductController::class);
 	Route::view('/settings', 'settings');
     Route::delete('/reviews/delete-multiply/{ids}', 'App\Http\Controllers\ReviewController@deleteMultiply');
@@ -40,6 +42,8 @@ Route::middleware(['auth.shopify'])->group(function () {
     Route::get('/reviews/stat/{daysAgo}', 'App\Http\Controllers\ReviewController@getStat');
     Route::post('/reviews/toogle-read-status/{id}', 'App\Http\Controllers\ReviewController@toogleReadStatus');
     Route::apiResource('/reviews', 'App\Http\Controllers\ReviewController');
+    Route::resource('settings',SettingController::class)->except(['show']);
+    Route::get('/settings/show', 'App\Http\Controllers\SettingController@show');
     
 });
 

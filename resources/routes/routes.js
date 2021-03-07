@@ -1,7 +1,8 @@
 import Reviews from '../components/reviews/index.vue';
 import ContactUs from '../components/ContactUs.vue';
 import Bookmarks from '../components/bookmarks/index.vue';
-import Statistics from '../components/statistics/index.vue';
+import Analytics from '../components/analytics/index.vue';
+import Settings from '../components/settings/index.vue';
 
 export const routes = [
     {
@@ -14,9 +15,14 @@ export const routes = [
         name: 'bookmarks',
     },
     {
-        path: '/statistics',
-        component: Statistics,
-        name: 'statistics',
+        path: '/analytics',
+        component: Analytics,
+        name: 'analytics',
+    },
+    {
+        path: '/settings',
+        component: Settings,
+        name: 'settngs',
     },
     {
         path: '/',

@@ -39,9 +39,9 @@
                       </ul>
                 </div>  
 
-                <div class="select mr-3 mt-4">
+                <div class="select mr-3 mt-4" v-if="showRating">
                   <select v-model="rating">
-                    <option>Select rating</option>
+                    <option value="null">Select rating</option>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -50,10 +50,6 @@
                   </select>
                 </div>
 
-                <label class="checkbox mr-3 mt-4">
-                  <input type="checkbox" v-model="recommended">
-                  Is recommended
-                </label>
                 <div class="mr-2 mt-4">
                   <date-picker v-model="fromDate" placeholder="From"></date-picker>
                 </div>
@@ -69,7 +65,7 @@
                   <th><input @change="checkAll($event)"  class="select-review-checkbox select-all" type="checkbox"></th>
                   <th>Product</th>
                   <th>Review</th>
-                  <th>Rating</th>
+                  <th v-if="showRating">Rating</th>
                   <th>Name</th>
                   <th>Created At</th>
                   <th> </th>
@@ -81,23 +77,23 @@
               </tfoot>
               <tbody>
                 <tr></tr>
-                <tr @click="showFullReview(review)" v-for="review in reviews" :class="[review.is_read == 0 ? 'unread' : '']" class="reviews-item">
+                <tr v-for="review in reviews" :class="[review.is_read == 0 ? 'unread' : '']" class="reviews-item">
                   <td>
                     <label class="checkbox">
                       <input @change="toogleSelectStatus(review, $event)"  class="select-review-checkbox" type="checkbox">
                     </label>
                     </td> 
-                  <td>{{ review.product.title }}</td>
-                  <td><div class="overme-100">{{ review.description }}</div></td>
-                  <td>
+                  <td @click="showFullReview(review)">{{ review.product_title }}</td>
+                  <td @click="showFullReview(review)"><div class="overme-100">{{ review.description }}</div></td>
+                  <td @click="showFullReview(review)" v-if="showRating">
                     <div class="mt-1 rating-col is-flex is-flex-direction-row is-align-items-center">
                       <img v-for="star in review.stars" src="img/yello_star.svg" height="20px" width="20px" />
                     </div>
                   </td>
-                  <td>{{ review.name }}</td>
-                  <td>{{ review.created_at_date }}</td>  
+                  <td @click="showFullReview(review)">{{ review.name }}</td>
+                  <td @click="showFullReview(review)">{{ review.created_at_date }}</td>  
                   <td class="is-flex is-flex-direction-row">  
-                    <span v-if="(bookmarkIds.indexOf(review.id) != -1)" @click.stop="bookmark(review.id)" class="icon">
+                    <span v-if="(bookmarkIds.indexOf(review.id) != -1)" @click="bookmark(review.id)" class="icon">
                       <font-awesome-icon :icon="(bookmarkIds.indexOf(review.id) != -1) ? 'fas' : 'far'" icon="bookmark" class="icon alt"/>
                     </span> 
                     <span v-else @click="bookmark(review.id)" class="icon">
@@ -139,7 +135,7 @@
             </div>
             <button @click="closeDeleteReviewsModal" class="modal-close is-large" aria-label="close"></button>
           </div>
-          <review-card  @closeReview='onCloseReview' v-if="isActiveReviewShow" :review="activeReview" />
+          <review-card  @bookmark='bookmark' @deleteReview='deleteReview' @closeReview='onCloseReview' v-if="isActiveReviewShow" :review="activeReview" :bookmarkIds="bookmarkIds" />
     </div>
 </template>
 
@@ -197,13 +193,29 @@ export default {
             activeReview: null,
             activeReviews: [],
             bookmarkIds: [],
-            isActiveReviewShow: false
+            isActiveReviewShow: false,
+            showRating: true
         };
     },
     mounted () {
         this.getReviews()
+        this.getSettings()
     },
     methods: {
+        getSettings () {
+          axios.get('settings/show')
+            .then(response => {
+              this.showRating = true
+              if (response.data) {
+                if (parseInt(response.data.rating) !== 1) {
+                  this.showRating = false
+                }
+              }
+            }) 
+            .catch(error => {
+                console.log(error);
+            });
+        },
         getReviews(page){
             axios.get('reviews',{ params: {
             productId: this.productId,
@@ -327,6 +339,7 @@ export default {
               if(response.status === 200) {
                 that.closeDeleteReviewModal()
                 that.getReviews(that.pagination.current_page)
+                that.isActiveReviewShow = false
               }
             })
             .catch(function (error) {

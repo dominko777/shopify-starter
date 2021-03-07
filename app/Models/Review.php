@@ -11,11 +11,11 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description', 'stars', 'name', 'avatar', 'email', 'is_recommended', 'notify_answer', 'user_id', 'is_read'];
+    protected $fillable = ['description', 'stars', 'name', 'avatar', 'email', 'is_recommended', 'notify_answer', 'user_id', 'is_read', 'comment', 'pagination_count', 'product_title']; 
 
     protected $appends = [
         'created_at_date',
-        'product',
+        /* 'product', */
     ];
 
     protected $hidden = ['updated_at'];
@@ -37,7 +37,7 @@ class Review extends Model
         return $this->hasMany('App\Models\Photo');
     } 
 
-    public function getProductAttribute() {
+    /* public function getProductAttribute() {
         $id = null;
         if ($this->product_id) {
             $id = $this->product_id;
@@ -57,7 +57,7 @@ class Review extends Model
             $product = $product['body']['data']['product'];
         }  
         return $product;
-    }
+    } */
 
     public function bookmarks()
     {   
