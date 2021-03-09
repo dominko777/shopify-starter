@@ -11,7 +11,7 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description', 'stars', 'name', 'avatar', 'email', 'is_recommended', 'notify_answer', 'user_id', 'is_read', 'comment', 'pagination_count', 'product_title']; 
+    protected $fillable = ['description', 'stars', 'name', 'avatar', 'email', 'is_recommended', 'notify_answer', 'user_id', 'is_read', 'comment', 'pagination_count', 'product_title', 'product_id']; 
 
     protected $appends = [
         'created_at_date',

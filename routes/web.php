@@ -26,9 +26,10 @@ Route::get('/login', function () {
 Route::post('/configure-theme',  );
 
 
-
+Route::post('reviews', 'App\Http\Controllers\ReviewController@store')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::get('product', 'App\Http\Controllers\ProductController@show');
-Route::get('reviews/average-stars/{id}', 'App\Http\Controllers\ReviewController@getAverageStars');
+Route::post('reviews/average-stars', 'App\Http\Controllers\ReviewController@getAverageStars')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('shop/reviews', 'App\Http\Controllers\ReviewController@shopReviews')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware(['auth.shopify'])->group(function () {
     Route::get('/', function () {
@@ -41,7 +42,9 @@ Route::middleware(['auth.shopify'])->group(function () {
     Route::post('/reviews/bookmark/{id}', 'App\Http\Controllers\ReviewController@bookmark');
     Route::get('/reviews/stat/{daysAgo}', 'App\Http\Controllers\ReviewController@getStat');
     Route::post('/reviews/toogle-read-status/{id}', 'App\Http\Controllers\ReviewController@toogleReadStatus');
-    Route::apiResource('/reviews', 'App\Http\Controllers\ReviewController');
+    Route::apiResource('/reviews', 'App\Http\Controllers\ReviewController')->except([
+        'store'
+    ]);
     Route::resource('settings',SettingController::class)->except(['show']);
     Route::get('/settings/show', 'App\Http\Controllers\SettingController@show');
     

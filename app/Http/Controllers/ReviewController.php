@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Review;
 use App\Models\Setting;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -114,7 +115,14 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        
+
+        $input = $request->all();
+        $input['product_id'] = 'gid://shopify/Product/' . $request->product_id;
+        $url = parse_url($request->shop_url);
+        $user = User::where('name', $url['host'])->firstOrFail();
+        $input['user_id'] = $user->id; 
+        $saved = Review::create($input);
+        return ['success' => $saved];
     }
 
     /**
@@ -227,19 +235,26 @@ class ReviewController extends Controller
       }
     }
 
-    public function getAverageStars($id) {
-      $sums = Review::where('product_id', 'like', '%' . $id )->whereNotNull('stars')->get('stars');
+    public function getAverageStars(Request $request) {
+      $sums = Review::where('product_id', 'like', '%' . $request->product_id )->whereNotNull('stars')->get('stars');
       $avg = null;
       if ($sums->count() > 0) {
         $avg = $sums->sum("stars") / $sums->count();
       }
-      $review = Review::where('product_id', 'like', '%' . $id )->firstOrFail();
-      $settigs = Setting::where('shop_id', $review->user_id)->firstOrFail();
-      $reviews = Review::where('product_id', 'like', '%' . $id )->paginate($settigs->pagination_count);
+      $url = parse_url($request->shop_url);
+      $user = User::where('name', $url['host'])->firstOrFail();
+      $settigs = Setting::where('shop_id', $user->id)->first();
       return [
-        'average' => round($avg, 1),
-        'reviews' => $reviews,
+        'average' => ($avg) ? round($avg, 1) : '',
         'settings' => $settigs
       ];
     }
+
+    public function shopReviews(Request $request) {
+      $url = parse_url($request->shop_url);
+      $user = User::where('name', $url['host'])->firstOrFail();
+      $settigs = Setting::where('shop_id', $user->id)->first();  
+      $reviews = Review::where('product_id', 'like', '%' . $request->product_id )->orderBy('id', "DESC")->paginate($settigs->pagination_count);
+      return view('reviews.partials.reviews', compact('reviews'));
+    }    
 }

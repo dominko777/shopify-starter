@@ -5,6 +5,7 @@ import tingle from 'tingle.js/dist/tingle.min.js'
 const axios = require('axios');
 const appDomain = "http://shopify-test.local"
 axios.baseURL = appDomain
+import { EmojiButton } from '@joeattardi/emoji-button'
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var avgRater = rater({element: document.getElementById('star-rating'), starSize: 22});
@@ -15,7 +16,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	const reviewAppBtn = document.getElementsByClassName('review-app-btn')[0]
 	if (reviewAppBtn) {
-		axios.get(appDomain + '/reviews/average-stars/' + reviewAppBtn.getAttribute("data-product"))
+		axios.post(appDomain + '/reviews/average-stars', {
+			product_id: reviewAppBtn.getAttribute("data-product"),
+			shop_url: reviewAppBtn.getAttribute("data-shop")
+		})
 	      .then(response => {
 	        avgRater.setRating(response.data.average)
 	        settings = response.data.settings
@@ -27,25 +31,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	        }
 			document.getElementsByClassName('tingle-modal-box__content')[0].style['background-color'] = response.data.settings.modal_background_color
 			document.getElementsByClassName('tingle-modal-box__footer')[0].style['background-color'] = response.data.settings.modal_background_color
+			document.getElementsByClassName('tingle-modal-box')[0].style['background-color'] = response.data.settings.modal_background_color
 	      })
 	      .catch(error => {
 	          console.log(error);
 	      });
 	}
-	
 
-	
+	let formRater = null
+	let picker = null
 
-	function addReiew() {
-
+	function initEmojiPicker () {
+		if (!picker) {
+			picker = new EmojiButton();
+			const trigger = document.querySelector('#emoji-trigger');
+			const reviewDescriptionTextarea = document.getElementById('review-description-textarea')
+			picker.on('emoji', selection => {
+			  reviewDescriptionTextarea.value += selection.emoji	
+			  console.log(selection.emoji);
+			});
+			trigger.addEventListener('click', () => picker.togglePicker(trigger));
+		}
 	}
-
-	var reviewBtn = document.querySelector(".review-app-btn")
-	reviewBtn.addEventListener('click', function () {
-		console.log('Btn: ' + this)
-	})
-
-	const formRater = null
+		 
 	var modal = new tingle.modal({
 	    footer: true,
 	    stickyFooter: false,
@@ -57,11 +65,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	    	if (parseInt(settings.rating) !== 1) {
 	    		formRating.style.display = 'none'
 	    	} else {
-	    		var formRater = rater({element: document.getElementById('form-rating'), starSize: 22});
+	    		if (!formRater) {
+		    		formRater = rater({element: formRating, starSize: 22, rateCallback: function rateCallback(rating, done) {
+		    			formRater.setRating(rating);
+	                    formRater.disable();
+	                    done();
+					}});
+	    		}
+				formRater.clear();
+				formRater.enable();
+				
 	    	}
+			const reviewNameInput = document.getElementById('review-name-input')
+	        const reviewDescriptionTextarea = document.getElementById('review-description-textarea')
+	        reviewNameInput.value = ''
+	        reviewDescriptionTextarea.value = ''
+	        initEmojiPicker()
 	    },
 	    onClose: function() {
-	        // console.log('modal closed');
+	    	if (formRater) {
+	    		formRater.clear();
+	    	}
 	    },
 	    beforeClose: function() {
 	        return true;
@@ -71,7 +95,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	modal.setContent('<h2>Review</h2><div id="form-rating"></div><div id="review-form">' + 
 		    '<input id="review-name-input" name="name" type="text" placeholder="Name">' + 
 		    '<span id="review-name-input-error" class="invalid-feedback">Please enter your name</span>' + 
+		    '<div id="review-container"><button id="emoji-trigger">&#128512;</button>' + 
 		    '<textarea id="review-description-textarea" rows="7" name="name" placeholder="Review"></textarea>' + 
+		    '</div>' + 
 		    '<span id="review-description-textarea-error" class="invalid-feedback">Please enter your review</span>' + 
 		'</div>');
 	modal.addFooterBtn('Save', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function() { 
@@ -99,20 +125,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			axios.post(appDomain + '/reviews', {
 				name: reviewNameInput.value,
 				description: reviewDescriptionTextarea.value,
-				productId: reviewAppBtn.getAttribute("data-product"),
+				product_id: reviewAppBtn.getAttribute("data-product"),
+				shop_url: reviewAppBtn.getAttribute("data-shop"),
+				product_title: reviewAppBtn.getAttribute("data-title"),
 				stars: formRater ? formRater.getRating() : ''
 			})
 	      .then(response => {
-	        avgRater.setRating(response.data.average)
-	        settings = response.data.settings
-	        if (parseInt(response.data.settings.rating) === 1) {
-	        	document.getElementById('average-rating').textContent = response.data.average
-			    averageRatingInfoBlock.style.visibility = 'visible'
-	        } else { 
-	        	averageRatingInfoBlock.style.display = 'none'
-	        }
-			document.getElementsByClassName('tingle-modal-box__content')[0].style['background-color'] = response.data.settings.modal_background_color
-			document.getElementsByClassName('tingle-modal-box__footer')[0].style['background-color'] = response.data.settings.modal_background_color
+	      	reviewNameInputError.style.display = 'none'
+		    reviewDescriptionTextareaError.style.display = 'none'
+		    reviewNameInput.value = ''
+	        reviewDescriptionTextarea.value = ''
+	        modal.close()
+	        successModal.open()
 	      })
 	      .catch(error => {
 	          console.log(error);
@@ -125,4 +149,39 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		modal.open(); 
 	});
 
+	var successModal = new tingle.modal({
+	    footer: true,
+	    stickyFooter: false,
+	    closeMethods: ['overlay', 'button', 'escape'],
+	    closeLabel: "Close",
+	    cssClass: ['custom-class-1', 'custom-class-2'],
+	    beforeClose: function() {
+	        return true;
+	        return false;
+	    }
+	});
+	successModal.setContent('<h3>Your review was successfully sent</h3>');
+	successModal.addFooterBtn('Ok', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function() { 
+		successModal.close()
+	})
+
+
+	axios.post(appDomain + '/shop/reviews', {
+			shop_url: reviewAppBtn.getAttribute("data-shop")
+		})
+      .then(response => {
+      	setReviewsBlock(response.data)
+      })
+      .catch(error => {
+          console.log(error);
+      });
+
+	function setReviewsBlock(reviewsHtml) {
+		const reviewsBlock = document.getElementById('reviews-block')
+		if (reviewsBlock) {
+			reviewsBlock.innerHTML = reviewsHtml
+		}
+		
+	}
+	
 })
