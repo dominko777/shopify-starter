@@ -19121,6 +19121,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -37857,7 +37858,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.mx-input {\n  padding-bottom: calc(0.5em - 1px);\n  padding-left: calc(0.75em - 1px);\n  padding-right: calc(0.75em - 1px);\n  padding-top: calc(0.5em - 1px);\n}\n.delete-review-modal {\n  width: 300px;\n}\n.select-all {\n  cursor: pointer;\n}\n.unread {\n  font-weight: 500;\n}\n", ""]);
+exports.push([module.i, "\n.mx-input {\n  padding-bottom: calc(0.5em - 1px);\n  padding-left: calc(0.75em - 1px);\n  padding-right: calc(0.75em - 1px);\n  padding-top: calc(0.5em - 1px);\n}\n.delete-review-modal {\n  width: 300px;\n}\n.select-all {\n  cursor: pointer;\n}\n.unread {\n  font-weight: 600;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -37875,7 +37876,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.bookmark, .trash {\n  cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.bookmark, .trash {\n  cursor: pointer;\n}\n.reply-label {\n  font-size: 20px;\n}\n.reply-textarea {\n  margin-top: 10px;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -66712,7 +66713,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "content" },
+        { staticClass: "content", staticStyle: { "white-space": "pre-line" } },
         [
           _vm._v("\n\t      " + _vm._s(_vm.review.description) + "\n\t      "),
           _c("br"),
@@ -66764,6 +66765,8 @@ var render = function() {
               }
             },
             [
+              _c("label", { staticClass: "reply-label" }, [_vm._v("Reply")]),
+              _vm._v(" "),
               _c("textarea", {
                 directives: [
                   {
@@ -66773,7 +66776,7 @@ var render = function() {
                     expression: "review.comment"
                   }
                 ],
-                staticClass: "mb-3 textarea",
+                staticClass: "mb-3 textarea reply-textarea",
                 attrs: { placeholder: "Type your response..." },
                 domProps: { value: _vm.review.comment },
                 on: {

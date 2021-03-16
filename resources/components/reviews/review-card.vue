@@ -31,7 +31,7 @@
         	Is recommended: {{ (review.is_recommended) ? 'yes' : 'no' }}
         </div>
 
-	    <div class="content">
+	    <div class="content" style="white-space: pre-line">
 	      {{ review.description }}
 	      <br>
 	      <br>
@@ -40,7 +40,8 @@
 	      	<vue-gallery-slideshow :images="fullPhotos" :index="index" @close="index = null"></vue-gallery-slideshow>
 	      </div>
 	      <form @submit.prevent="saveResponse">
-		      <textarea v-model="review.comment" class="mb-3 textarea" placeholder="Type your response..."></textarea>
+          <label class="reply-label">Reply</label>
+		      <textarea v-model="review.comment" class="mb-3 textarea reply-textarea" placeholder="Type your response..."></textarea>
 		      <button type="submit" class="mb-3 button is-primary">Save</button>
 		  </form>
           <time :datetime="review.created_at_date">{{ review.created_at_date }}</time>
@@ -113,5 +114,13 @@ export default {
 <style>
   .bookmark, .trash {
     cursor: pointer;
+  }
+
+  .reply-label {
+    font-size: 20px;
+  }
+
+  .reply-textarea {
+    margin-top: 10px;
   }
 </style>

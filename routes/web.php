@@ -30,6 +30,8 @@ Route::post('reviews', 'App\Http\Controllers\ReviewController@store')->withoutMi
 Route::get('product', 'App\Http\Controllers\ProductController@show');
 Route::post('reviews/average-stars', 'App\Http\Controllers\ReviewController@getAverageStars')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::post('shop/reviews', 'App\Http\Controllers\ReviewController@shopReviews')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('shop/ajax-reviews', 'App\Http\Controllers\ReviewController@ajaxShopReviews')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('reviews/photos', 'App\Http\Controllers\ReviewController@photos')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware(['auth.shopify'])->group(function () {
     Route::get('/', function () {
@@ -47,7 +49,6 @@ Route::middleware(['auth.shopify'])->group(function () {
     ]);
     Route::resource('settings',SettingController::class)->except(['show']);
     Route::get('/settings/show', 'App\Http\Controllers\SettingController@show');
-    
 });
 
 

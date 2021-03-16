@@ -11,6 +11,8 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class ReviewController extends Controller
 {
@@ -122,7 +124,7 @@ class ReviewController extends Controller
         $user = User::where('name', $url['host'])->firstOrFail();
         $input['user_id'] = $user->id; 
         $saved = Review::create($input);
-        return ['success' => $saved];
+        return ['review' => $saved];
     }
 
     /**
@@ -184,7 +186,7 @@ class ReviewController extends Controller
     }
 
     public function getStat(Request $request, $daysAgo) {
-
+        $shop = Auth::user();
         $toDay = Carbon::now();
         $toDayCopy = Carbon::now();
         $days = [];
@@ -195,6 +197,7 @@ class ReviewController extends Controller
           $days[]['date'] = $date->format('d-m-Y');
         }
         $reviews = Review::select(DB::Raw('COUNT(*) as `count`'), DB::Raw("DATE_FORMAT(created_at, '%d-%m-%Y') date"))
+        ->where('user_id', $shop->id)
         ->whereDate('created_at', '>=',  $fromDay->format('Y-m-d'))
         ->whereDate('created_at', '<=',  $toDay->format('Y-m-d'))
         ->groupBy('date')->orderBy('date', 'ASC');
@@ -253,8 +256,46 @@ class ReviewController extends Controller
     public function shopReviews(Request $request) {
       $url = parse_url($request->shop_url);
       $user = User::where('name', $url['host'])->firstOrFail();
-      $settigs = Setting::where('shop_id', $user->id)->first();  
-      $reviews = Review::where('product_id', 'like', '%' . $request->product_id )->orderBy('id', "DESC")->paginate($settigs->pagination_count);
-      return view('reviews.partials.reviews', compact('reviews'));
+      $settings = Setting::where('shop_id', $user->id)->first();  
+      $reviews = Review::where('product_id', 'like', '%' . $request->product_id )
+        ->where('user_id', $user->id)
+        ->orderBy('id', "DESC")->paginate($settings->pagination_count);
+      return view('reviews.partials.reviews', compact('reviews', 'settings'));
     }    
+
+    function ajaxShopReviews(Request $request)
+    {
+      $url = parse_url($request->shop_url);
+      $user = User::where('name', $url['host'])->firstOrFail();
+      $settings = Setting::where('shop_id', $user->id)->first();  
+      $reviews = Review::where('product_id', 'like', '%' . $request->product_id )
+        ->where('user_id', $user->id)
+        ->orderBy('id', "DESC")->paginate($settings->pagination_count);
+      return view('reviews.partials.reviews', compact('reviews', 'settings'))->render();
+    }
+
+    function photos(Request $request)
+    {
+      $url = parse_url($request->shop_url);
+      $user = User::where('name', $url['host'])->firstOrFail();
+      $review = Review::findOrFail($request->review_id);
+      $files = $request->file('files');
+      foreach ($files as $file) {
+        $fileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
+        Storage::disk('public')->put('reviews/original/' . $fileName, file_get_contents($file));
+
+        $img = Image::make($file->getRealPath());
+        $img->resize(150, 150, function ($constraint) {
+            $constraint->aspectRatio();                 
+        });
+        $img->stream();
+        Storage::disk('public')->put('reviews/thumbs/' . $fileName, $img);
+        Photo::create([
+          'photo' => $fileName,
+          'review_id' => $review->id
+        ]);
+      }
+
+      return ['success' => true];
+    }
 }

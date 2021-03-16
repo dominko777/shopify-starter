@@ -23,7 +23,7 @@
 }
  
 #average-rating {
-  width: 40px;
+  padding-right: 13px;
   float: left; 
 }
 
@@ -205,7 +205,7 @@
 }
 
 #reviews-block {
-  margin-top: 23px; 
+  margin-top: 0px; 
 }
 
 #reviews-block table th,td {
