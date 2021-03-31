@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
         <title>{{ config('shopify-app.app_name') }}</title>
+        <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}">
         @yield('styles')
     </head>
   

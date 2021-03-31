@@ -25,7 +25,7 @@ Route::get('/login', function () {
 
 Route::post('/configure-theme',  );
 
-
+Route::get('privacy-policy', 'App\Http\Controllers\ReviewController@privacyPolicy')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::post('reviews', 'App\Http\Controllers\ReviewController@store')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::get('product', 'App\Http\Controllers\ProductController@show');
 Route::post('reviews/average-stars', 'App\Http\Controllers\ReviewController@getAverageStars')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
@@ -33,7 +33,11 @@ Route::post('shop/reviews', 'App\Http\Controllers\ReviewController@shopReviews')
 Route::post('shop/ajax-reviews', 'App\Http\Controllers\ReviewController@ajaxShopReviews')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::post('reviews/photos', 'App\Http\Controllers\ReviewController@photos')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-Route::middleware(['auth.shopify'])->group(function () {
+Route::post('customers/redact', 'App\Http\Controllers\GdprController@customersRedact')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('shop/redact', 'App\Http\Controllers\GdprController@shopRedact')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('customers/data_request', 'App\Http\Controllers\GdprController@customersDataRequest')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+Route::middleware(['auth.shopify', 'billable' ])->group(function () {
     Route::get('/', function () {
     	return view('reviews');
 	})->middleware(['auth.shopify'])->name('home');
@@ -46,7 +50,7 @@ Route::middleware(['auth.shopify'])->group(function () {
     Route::post('/reviews/toogle-read-status/{id}', 'App\Http\Controllers\ReviewController@toogleReadStatus');
     Route::apiResource('/reviews', 'App\Http\Controllers\ReviewController')->except([
         'store'
-    ]);
+    ]); 
     Route::resource('settings',SettingController::class)->except(['show']);
     Route::get('/settings/show', 'App\Http\Controllers\SettingController@show');
 });

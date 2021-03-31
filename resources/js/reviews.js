@@ -8,7 +8,7 @@ var rater = require("rater-js")
 import 'tingle.js/dist/tingle.min.css'
 import tingle from 'tingle.js/dist/tingle.min.js'
 const axios = require('axios');
-const appDomain = "http://shopify-test.local"
+const appDomain = "https://betterreview.online"
 axios.baseURL = appDomain
 import { EmojiButton } from '@joeattardi/emoji-button'
 import baguetteBox from 'baguettebox.js'
@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	}
     
 	var averageRatingInfoBlock = document.getElementsByClassName('average-rating-info')[0]
+	
+
 	let settings = {}
 
 	const reviewAppBtn = document.getElementsByClassName('review-app-btn')[0]
@@ -36,14 +38,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				shop_url: reviewAppBtn.getAttribute("data-shop")
 			})
 		      .then(response => {
-		      	if (avgRater) {
+		      	if (avgRater && response.data.average.length !== 0) {
 		      		avgRater.setRating(response.data.average)
 		      	}
-		        settings = response.data.settings
-		        if (parseInt(response.data.settings.rating) === 1) {
-		        	document.getElementById('average-rating').textContent = response.data.average
+		      	settings = response.data.settings
+		      	document.getElementById('average-rating').style.display = 'none'
+		      	if (response.data.average.length !== 0 && parseInt(response.data.settings.rating) === 1) {
+		      		document.getElementById('average-rating').textContent = response.data.average
 				    averageRatingInfoBlock.style.visibility = 'visible'
-		        } else { 
+		      	} else { 
 		        	averageRatingInfoBlock.style.display = 'none'
 		        }
 				document.getElementsByClassName('tingle-modal-box__content')[0].style['background-color'] = response.data.settings.modal_background_color

@@ -13,6 +13,17 @@ class User extends Authenticatable implements IShopModel
 {
     use HasFactory, Notifiable, ShopModel;
 
+    public static function boot() {
+        parent::boot();
+
+        //once created/inserted successfully this method fired, so I tested foo 
+        static::created(function (User $user) {
+            Setting::create([
+                'shop_id' => $user->id,
+            ]);    
+        });
+    }
+
     public function bookmarks()
     {   
       return $this->belongsToMany('App\Models\Review', 'bookmarks');

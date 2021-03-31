@@ -24,7 +24,7 @@ if (token) {
     console.error('CSRF token not found')
 }
 
-window.appDomain = "http://shopify-test.local"
+window.appDomain = "https://betterreview.online"
 
 import { routes } from '../routes/routes.js'
 

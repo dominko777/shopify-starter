@@ -107,6 +107,8 @@
               </tbody>
             </table>
 
+            <div style="text-align: center;" v-if="reviews.length == 0">You have no reviews yet</div>
+
             <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getReviews()"></pagination>
           </div>
           <div class="modal" ref="deleteReviewModal">
